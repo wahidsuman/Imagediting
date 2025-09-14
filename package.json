@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "build:android": "cd android && ./gradlew assembleRelease",
     "build:android-debug": "cd android && ./gradlew assembleDebug",
-    "generate-icons": "node scripts/generate-icon.js && node scripts/convert-icons-to-png.js",
+    "generate-icons": "./scripts/create-png-icons.sh",
     "clean": "cd android && ./gradlew clean && cd .. && npx react-native start --reset-cache",
     "test-build": "node scripts/test-build.sh"
   },
