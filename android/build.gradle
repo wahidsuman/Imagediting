@@ -21,4 +21,10 @@ allprojects {
         mavenCentral()
         maven { url "https://www.jitpack.io" }
     }
+    
+    configurations.all {
+        resolutionStrategy {
+            force "com.facebook.react:react-native:0.72.6"
+        }
+    }
 }
