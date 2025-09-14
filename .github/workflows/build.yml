@@ -32,9 +32,6 @@ jobs:
       with:
         api-level: 33
         build-tools: 33.0.0
-        cmdline-tools-version: 12266719
-      env:
-        SKIP_JDK_VERSION_CHECK: true
       
     - name: Cache Gradle packages
       uses: actions/cache@v4

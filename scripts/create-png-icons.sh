@@ -21,6 +21,9 @@ create_png_placeholder() {
     local size=$1
     local density=$2
     
+    # Create the directory if it doesn't exist
+    mkdir -p "android/app/src/main/res/mipmap-${density}"
+
     # Create a simple PNG file using ImageMagick if available, otherwise create a minimal PNG
     if command -v convert >/dev/null 2>&1; then
         # Use ImageMagick to create a proper PNG

@@ -1,0 +1,18 @@
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Android
+android/app/build/
+android/build/
+android/app/src/main/assets/
+android/app/debug.keystore
+android/.gradle/
+
+# iOS
+ios/build/
+
+# Other
+.DS_Store
+*.pem
