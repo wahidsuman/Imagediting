@@ -12,20 +12,6 @@ android {
         versionName "1.0"
     }
 
-    sourceSets {
-        main {
-            java {
-                srcDirs = ['src/main/java']
-            }
-            res {
-                srcDirs = ['src/main/res']
-            }
-            manifest {
-                srcFile 'src/main/AndroidManifest.xml'
-            }
-        }
-    }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -39,5 +25,5 @@ android {
 }
 
 dependencies {
-    // No external dependencies - just use Android framework
+    // No external dependencies
 }
