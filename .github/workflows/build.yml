@@ -1,0 +1,124 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, develop, cursor/simple-pill-reminder-application-e46a ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      with:
+        api-level: 33
+        build-tools: 33.0.0
+        cmdline-tools-version: 12266719
+      env:
+        SKIP_JDK_VERSION_CHECK: true
+      
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+          
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Generate app icons
+      run: npm run generate-icons
+      
+    - name: Create debug keystore
+      run: |
+        keytool -genkey -v -keystore android/app/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug, O=Android, C=US"
+        
+    - name: Clean build
+      run: |
+        cd android
+        chmod +x gradlew
+        ./gradlew clean
+        
+    - name: Build APK
+      run: |
+        cd android
+        ./gradlew assembleRelease --no-daemon --stacktrace
+        
+    - name: Verify APK
+      run: |
+        APK_PATH="android/app/build/outputs/apk/release/app-release.apk"
+        if [ -f "$APK_PATH" ]; then
+          echo "✅ APK built successfully!"
+          echo "📱 APK location: $APK_PATH"
+          echo "📏 APK size: $(du -h "$APK_PATH" | cut -f1)"
+        else
+          echo "❌ APK build failed - file not found!"
+          echo "📁 Checking build directory structure:"
+          find android/app/build -type f -name "*.apk" 2>/dev/null || echo "No APK files found"
+          echo "📁 Checking outputs directory:"
+          ls -la android/app/build/outputs/ 2>/dev/null || echo "No outputs directory"
+          exit 1
+        fi
+        
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: pill-reminder-app-release
+        path: android/app/build/outputs/apk/release/app-release.apk
+        
+    - name: Create Release
+      if: github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ github.run_number }}
+        name: My Pills v${{ github.run_number }}
+        body: |
+          ## My Pills - Family Medication Tracker
+          
+          ### What's New
+          - Individual and family plan features
+          - Camera integration for pill photos
+          - Smart push notifications
+          - Family sharing capabilities
+          
+          ### Installation
+          1. Download the APK file below
+          2. Enable "Install from unknown sources" in your Android settings
+          3. Install the APK
+          
+          ### Features
+          - ✅ Personal medication management
+          - 📸 Take photos of pills
+          - 🔔 Smart notifications
+          - 👨‍👩‍👧‍👦 Family sharing (Premium)
+          - ☁️ Cloud sync
+          
+          **Note**: This is a development build for testing purposes.
+        files: android/app/build/outputs/apk/release/app-release.apk
+        draft: false
+        prerelease: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
