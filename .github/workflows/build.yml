@@ -2,7 +2,7 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ main, develop, cursor/simple-pill-reminder-application-e46a, clean-workflows ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
