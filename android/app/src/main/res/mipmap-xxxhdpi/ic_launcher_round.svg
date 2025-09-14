@@ -1,0 +1,21 @@
+
+<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="pillGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D4ED8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="96" cy="96" r="94" fill="url(#pillGradient)" stroke="#ffffff" stroke-width="2"/>
+  
+  <!-- Pill shape -->
+  <ellipse cx="96" cy="96" rx="64" ry="32" fill="#ffffff" opacity="0.9"/>
+  
+  <!-- Pill line -->
+  <line x1="64" y1="96" x2="128" y2="96" stroke="#3B82F6" stroke-width="2"/>
+  
+  <!-- Notification dot -->
+  <circle cx="144" cy="48" r="16" fill="#EF4444"/>
+</svg>

@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "build:android": "cd android && ./gradlew assembleRelease",
     "build:android-debug": "cd android && ./gradlew assembleDebug",
-    "generate-icons": "node scripts/generate-icon.js",
+    "generate-icons": "node scripts/generate-icon.js && node scripts/convert-icons-to-png.js",
     "clean": "cd android && ./gradlew clean && cd .. && npx react-native start --reset-cache",
     "test-build": "node scripts/test-build.sh"
   },
@@ -25,7 +25,6 @@
     "react-native-svg": "^13.14.0",
     "react-native-image-picker": "^7.0.3",
     "react-native-permissions": "^3.10.1",
-    "react-native-workmanager": "^0.4.1",
     "react-native-sqlite-storage": "^6.0.1",
     "react-native-uuid": "^2.0.1",
     "react-native-paper": "^5.10.6",
@@ -37,9 +36,7 @@
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/stack": "^6.3.17",
     "@react-navigation/bottom-tabs": "^6.5.8",
-    "react-native-purchases": "^6.6.0",
-    "react-native-device-info": "^10.8.0",
-    "react-native-keychain": "^8.1.3"
+    "react-native-device-info": "^10.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
