@@ -33,27 +33,51 @@ A comprehensive Android app for managing medications with individual and family 
 - **Data Security**: Local SQLite with cloud backup
 - **Accessibility**: Large fonts, high contrast, voice support
 
-## Installation
+## Quick Start
 
-### Prerequisites
-- Node.js 16+
+### Download APK (Easiest)
+1. Go to the **Actions** tab in this repository
+2. Click on the latest successful workflow run
+3. Download the `app-release` artifact
+4. Install the APK on your Android device
+
+### Build from Source
+
+#### Prerequisites
+- Node.js 18+
+- Java 17+
+- Android SDK 33+
 - React Native CLI
-- Android Studio
-- Android SDK 21+
 
-### Setup
+#### Setup
 1. Clone the repository
 2. Install dependencies:
    ```bash
    npm install
    ```
-3. For Android:
+3. Generate app icons:
    ```bash
-   cd android
-   ./gradlew clean
-   cd ..
-   npx react-native run-android
+   npm run generate-icons
    ```
+4. Build APK:
+   ```bash
+   npm run build:android
+   ```
+
+#### Run on Device
+```bash
+# Start Metro bundler
+npm start
+
+# Run on Android (in another terminal)
+npm run android
+```
+
+### GitHub Actions Build
+The project automatically builds APKs using GitHub Actions:
+- **Trigger**: Push to `main` branch
+- **Output**: APK available in Actions artifacts
+- **Release**: Automatic GitHub release with APK download
 
 ### Permissions
 The app requires the following permissions:
@@ -110,15 +134,38 @@ npm run ios
 ```
 
 ### Building for Production
+
+#### Android APK
 ```bash
-# Android
+# Quick build
+npm run build:android
+
+# Manual build
 cd android
 ./gradlew assembleRelease
-
-# iOS
-cd ios
-xcodebuild -workspace PillReminderApp.xcworkspace -scheme PillReminderApp -configuration Release
 ```
+
+#### Testing Build Process
+```bash
+# Test all build components
+npm run test-build
+
+# Clean and rebuild
+npm run clean
+npm run build:android
+```
+
+#### GitHub Actions
+- Push to `main` branch triggers automatic build
+- APK available in Actions artifacts
+- Automatic release creation with APK download
+
+### Build Scripts
+- `npm run build:android` - Build release APK
+- `npm run build:android-debug` - Build debug APK
+- `npm run generate-icons` - Generate app icons
+- `npm run clean` - Clean build artifacts
+- `npm run test-build` - Test build process
 
 ## Contributing
 

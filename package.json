@@ -7,7 +7,12 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "build:android": "cd android && ./gradlew assembleRelease",
+    "build:android-debug": "cd android && ./gradlew assembleDebug",
+    "generate-icons": "node scripts/generate-icon.js",
+    "clean": "cd android && ./gradlew clean && cd .. && npx react-native start --reset-cache",
+    "test-build": "node scripts/test-build.sh"
   },
   "dependencies": {
     "react": "18.2.0",
