@@ -71,7 +71,12 @@ jobs:
       run: |
         cd android
         export GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dorg.gradle.configureondemand=false"
-        ./gradlew assembleRelease --no-daemon --no-build-cache --stacktrace
+        echo "=== Gradle Version ==="
+        ./gradlew --version
+        echo "=== Gradle Tasks ==="
+        ./gradlew tasks --all
+        echo "=== Starting Build ==="
+        ./gradlew assembleRelease --no-daemon --no-build-cache --stacktrace --info
         
     - name: Verify APK
       run: |
