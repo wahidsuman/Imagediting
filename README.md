@@ -190,4 +190,4 @@ For support, email support@mypills.app or visit our help center.
 - [ ] AI pill recognition
 - [ ] Integration with pharmacies
 - [ ] Health data export
-- [ ] Multi-language support
+- [ ] Multi-language support# Diagnostic trigger
