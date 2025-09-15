@@ -1,6 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DatabaseService from './DatabaseService';
-import {v4 as uuidv4} from 'react-native-uuid';
+
+// Simple UUID generator (no external dependency)
+const generateUUID = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
 
 class AuthService {
   static currentUser = null;
@@ -37,7 +45,7 @@ class AuthService {
       const {name, email, isFamilyAdmin = false} = userData;
       
       // Create family ID if user is admin
-      const familyId = isFamilyAdmin ? uuidv4() : null;
+      const familyId = isFamilyAdmin ? generateUUID() : null;
       
       const user = await DatabaseService.createUser({
         name,

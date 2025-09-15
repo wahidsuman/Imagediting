@@ -10,7 +10,7 @@ import {
   Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
+// Image picker removed - using default pill image
 import DatabaseService from '../services/DatabaseService';
 import NotificationService from '../services/NotificationService';
 
@@ -46,33 +46,13 @@ const EditPillScreen = ({navigation, route}) => {
   };
 
   const openCamera = () => {
-    const options = {
-      mediaType: 'photo',
-      quality: 0.8,
-      maxWidth: 800,
-      maxHeight: 800,
-    };
-
-    launchCamera(options, response => {
-      if (response.assets && response.assets[0]) {
-        setImageUri(response.assets[0].uri);
-      }
-    });
+    // Camera functionality removed - using default pill image
+    Alert.alert('Camera', 'Camera functionality not available in this simplified version');
   };
 
   const openGallery = () => {
-    const options = {
-      mediaType: 'photo',
-      quality: 0.8,
-      maxWidth: 800,
-      maxHeight: 800,
-    };
-
-    launchImageLibrary(options, response => {
-      if (response.assets && response.assets[0]) {
-        setImageUri(response.assets[0].uri);
-      }
-    });
+    // Gallery functionality removed - using default pill image
+    Alert.alert('Gallery', 'Gallery functionality not available in this simplified version');
   };
 
   const handleSave = async () => {
