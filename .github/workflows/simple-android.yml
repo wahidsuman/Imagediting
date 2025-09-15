@@ -1,0 +1,168 @@
+name: Simple Android Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+      with:
+        api-level: 30
+        build-tools: 30.0.3
+        
+    - name: Accept Android SDK licenses
+      run: |
+        yes | sdkmanager --licenses || true
+        
+    - name: Create Simple Android Project
+      run: |
+        # Create a completely new, simple Android project
+        mkdir -p simple-android/app/src/main/java/com/example/simpleapp
+        mkdir -p simple-android/app/src/main/res/layout
+        mkdir -p simple-android/app/src/main/res/values
+        
+        # Create build.gradle (project level)
+        cat > simple-android/build.gradle << 'EOF'
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.2.2'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+EOF
+
+        # Create build.gradle (app level)
+        cat > simple-android/app/build.gradle << 'EOF'
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+    
+    defaultConfig {
+        applicationId "com.example.simpleapp"
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+    }
+    
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+}
+
+dependencies {
+    // No dependencies
+}
+EOF
+
+        # Create AndroidManifest.xml
+        cat > simple-android/app/src/main/AndroidManifest.xml << 'EOF'
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application
+        android:allowBackup="true"
+        android:label="Simple App">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
+EOF
+
+        # Create MainActivity.java
+        cat > simple-android/app/src/main/java/com/example/simpleapp/MainActivity.java << 'EOF'
+package com.example.simpleapp;
+
+import android.app.Activity;
+import android.os.Bundle;
+
+public class MainActivity extends Activity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+}
+EOF
+
+        # Create layout
+        cat > simple-android/app/src/main/res/layout/activity_main.xml << 'EOF'
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World" />
+</LinearLayout>
+EOF
+
+        # Create strings.xml
+        cat > simple-android/app/src/main/res/values/strings.xml << 'EOF'
+<resources>
+    <string name="app_name">Simple App</string>
+</resources>
+EOF
+
+        # Create gradle wrapper
+        mkdir -p simple-android/gradle/wrapper
+        cat > simple-android/gradle/wrapper/gradle-wrapper.properties << 'EOF'
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-6.7.1-all.zip
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+EOF
+
+        # Copy gradle wrapper jar
+        cp android/gradle/wrapper/gradle-wrapper.jar simple-android/gradle/wrapper/
+        cp android/gradlew simple-android/
+        chmod +x simple-android/gradlew
+
+    - name: Build Simple Android Project
+      run: |
+        cd simple-android
+        ./gradlew assembleDebug
+        
+    - name: Check if APK was created
+      run: |
+        if [ -f "simple-android/app/build/outputs/apk/debug/app-debug.apk" ]; then
+          echo "✅ Simple Android build SUCCESS!"
+          ls -la simple-android/app/build/outputs/apk/debug/
+        else
+          echo "❌ Simple Android build FAILED"
+          echo "Build directory contents:"
+          find simple-android/app/build -name "*.apk" 2>/dev/null || echo "No APK files found"
+        fi

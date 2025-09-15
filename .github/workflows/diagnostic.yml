@@ -1,0 +1,39 @@
+name: Diagnostic - Check Environment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+      with:
+        api-level: 30
+        build-tools: 30.0.3
+        
+    - name: Check Environment
+      run: |
+        echo "=== Java Version ==="
+        java -version
+        echo "=== Android SDK ==="
+        echo "ANDROID_HOME=$ANDROID_HOME"
+        echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+        ls -la $ANDROID_HOME || echo "ANDROID_HOME not found"
+        echo "=== Gradle Version ==="
+        cd android && ./gradlew --version
+        echo "=== Gradle Tasks ==="
+        cd android && ./gradlew tasks --all | head -20
+        echo "=== Try Simple Gradle Task ==="
+        cd android && ./gradlew help
