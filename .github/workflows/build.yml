@@ -37,6 +37,15 @@ jobs:
       run: |
         yes | sdkmanager --licenses || true
         
+    - name: Set Android SDK environment
+      run: |
+        echo "ANDROID_HOME=$ANDROID_HOME"
+        echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+        echo "JAVA_HOME=$JAVA_HOME"
+        echo "PATH=$PATH"
+        ls -la $ANDROID_HOME || echo "ANDROID_HOME not found"
+        ls -la $ANDROID_SDK_ROOT || echo "ANDROID_SDK_ROOT not found"
+        
     - name: Cache Gradle packages
       uses: actions/cache@v4
       with:
@@ -70,7 +79,13 @@ jobs:
     - name: Build APK
       run: |
         cd android
+        export ANDROID_HOME=$ANDROID_HOME
+        export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT
         export GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dorg.gradle.configureondemand=false"
+        echo "=== Environment Variables ==="
+        echo "ANDROID_HOME=$ANDROID_HOME"
+        echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+        echo "JAVA_HOME=$JAVA_HOME"
         echo "=== Gradle Version ==="
         ./gradlew --version
         echo "=== Gradle Tasks ==="
