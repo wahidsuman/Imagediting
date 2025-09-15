@@ -98,7 +98,7 @@ jobs:
         echo "=== Gradle Version ==="
         ./gradlew --version
         echo "=== Starting Build ==="
-        ./gradlew assembleRelease --no-daemon --no-build-cache --stacktrace --info
+        ./gradlew assembleRelease --no-daemon --no-build-cache --stacktrace --info --debug
         
     - name: Verify APK
       run: |

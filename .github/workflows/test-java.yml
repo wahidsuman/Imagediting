@@ -1,0 +1,112 @@
+name: Test Java Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-java:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+        
+    - name: Create Simple Java Project
+      run: |
+        mkdir -p java-test/src/main/java/com/example
+        mkdir -p java-test/src/test/java/com/example
+        
+        # Create build.gradle for Java project
+        cat > java-test/build.gradle << 'EOF'
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+EOF
+
+        # Create simple Java class
+        cat > java-test/src/main/java/com/example/HelloWorld.java << 'EOF'
+package com.example;
+
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+    
+    public String getMessage() {
+        return "Hello from Java!";
+    }
+}
+EOF
+
+        # Create test
+        cat > java-test/src/test/java/com/example/HelloWorldTest.java << 'EOF'
+package com.example;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class HelloWorldTest {
+    @Test
+    public void testGetMessage() {
+        HelloWorld hello = new HelloWorld();
+        assertEquals("Hello from Java!", hello.getMessage());
+    }
+}
+EOF
+
+        # Create gradle wrapper
+        mkdir -p java-test/gradle/wrapper
+        cat > java-test/gradle/wrapper/gradle-wrapper.properties << 'EOF'
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-6.7.1-all.zip
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+EOF
+
+        # Copy gradle wrapper jar
+        cp android/gradle/wrapper/gradle-wrapper.jar java-test/gradle/wrapper/
+        cp android/gradlew java-test/
+        chmod +x java-test/gradlew
+
+    - name: Test Java Build
+      run: |
+        cd java-test
+        echo "=== Gradle Version ==="
+        ./gradlew --version
+        echo "=== Gradle Tasks ==="
+        ./gradlew tasks
+        echo "=== Build Java Project ==="
+        ./gradlew build
+        echo "=== Run Tests ==="
+        ./gradlew test
+        echo "=== Run Application ==="
+        ./gradlew run || echo "No run task available"
+        
+    - name: Check Build Results
+      run: |
+        if [ -d "java-test/build" ]; then
+          echo "✅ Java build SUCCESS!"
+          ls -la java-test/build/
+        else
+          echo "❌ Java build FAILED"
+        fi
