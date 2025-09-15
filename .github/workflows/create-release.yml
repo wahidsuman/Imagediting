@@ -1,0 +1,57 @@
+name: Create Release (Manual APK Upload)
+
+on:
+  workflow_dispatch:
+    inputs:
+      apk_path:
+        description: 'Path to APK file (relative to repo root)'
+        required: true
+        default: 'android/app/build/outputs/apk/release/app-release.apk'
+      version:
+        description: 'Release version'
+        required: true
+        default: 'v1.0.0'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Check if APK exists
+      run: |
+        if [ -f "${{ github.event.inputs.apk_path }}" ]; then
+          echo "✅ APK found at: ${{ github.event.inputs.apk_path }}"
+          echo "📏 APK size: $(du -h "${{ github.event.inputs.apk_path }}" | cut -f1)"
+        else
+          echo "❌ APK not found at: ${{ github.event.inputs.apk_path }}"
+          echo "Please build the APK locally first using ./build-locally.sh"
+          exit 1
+        fi
+        
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ github.event.inputs.version }}
+        name: Pill Reminder App ${{ github.event.inputs.version }}
+        body: |
+          ## Pill Reminder App
+          
+          ### Installation
+          1. Download the APK file below
+          2. Enable "Install from unknown sources" in your Android settings
+          3. Install the APK
+          
+          ### Features
+          - ✅ Basic Android app
+          - 📱 Compatible with Android 5.0+
+          - 🎯 Ultra-minimal design
+          
+          **Note**: This is a development build.
+        files: ${{ github.event.inputs.apk_path }}
+        draft: false
+        prerelease: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
