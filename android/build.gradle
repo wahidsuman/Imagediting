@@ -10,7 +10,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.4.2")
+        classpath("com.android.tools.build:gradle:7.3.1")
         classpath("com.facebook.react:react-native-gradle-plugin")
     }
 }
@@ -22,9 +22,4 @@ allprojects {
         maven { url "https://www.jitpack.io" }
     }
     
-    configurations.all {
-        resolutionStrategy {
-            force "com.facebook.react:react-native:0.72.6"
-        }
-    }
 }
