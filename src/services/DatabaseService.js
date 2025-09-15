@@ -107,6 +107,30 @@ class DatabaseService {
     }
   }
 
+  static async markPillAsTaken(pillId, userId) {
+    try {
+      const pill = memoryStorage.get(`pill_${pillId}`);
+      if (pill) {
+        const updatedPill = {
+          ...pill,
+          taken: true,
+          taken_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+        memoryStorage.set(`pill_${pillId}`, updatedPill);
+        
+        // Record in history
+        await this.recordPillTaken(pillId, userId);
+        
+        return updatedPill;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error marking pill as taken:', error);
+      throw error;
+    }
+  }
+
   // Pill history
   static async recordPillTaken(pillId, userId, notes = '') {
     try {
@@ -138,6 +162,36 @@ class DatabaseService {
     } catch (error) {
       console.error('Error getting pill history:', error);
       return [];
+    }
+  }
+
+  // Subscription management
+  static async getActiveSubscription(userId) {
+    try {
+      // For demo purposes, return null (no active subscription)
+      // In a real app, this would check for active subscriptions
+      return null;
+    } catch (error) {
+      console.error('Error getting active subscription:', error);
+      return null;
+    }
+  }
+
+  static async createSubscription(userId, subscriptionData) {
+    try {
+      const subscription = {
+        id: generateUUID(),
+        user_id: userId,
+        ...subscriptionData,
+        created_at: new Date().toISOString(),
+        status: 'active',
+      };
+      
+      memoryStorage.set(`subscription_${subscription.id}`, subscription);
+      return subscription;
+    } catch (error) {
+      console.error('Error creating subscription:', error);
+      throw error;
     }
   }
 }
