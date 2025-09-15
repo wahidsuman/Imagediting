@@ -40,7 +40,6 @@ android {
 dependencies {
     // Minimal Android dependencies
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }
 
 // Native modules script removed - using simplified build without external native modules
