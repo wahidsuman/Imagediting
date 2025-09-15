@@ -38,8 +38,7 @@ android {
 }
 
 dependencies {
-    // Minimal Android dependencies
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    // No external dependencies - using basic Android only
 }
 
 // Native modules script removed - using simplified build without external native modules
