@@ -28,7 +28,7 @@ jobs:
         java-version: '17'
         
     - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
+      uses: android-actions/setup-android@v2
       with:
         api-level: 33
         build-tools: 33.0.0
@@ -70,7 +70,8 @@ jobs:
     - name: Build APK
       run: |
         cd android
-        ./gradlew assembleRelease --no-daemon --stacktrace
+        export GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.parallel=false -Dorg.gradle.configureondemand=false"
+        ./gradlew assembleRelease --no-daemon --no-build-cache --stacktrace
         
     - name: Verify APK
       run: |
