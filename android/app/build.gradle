@@ -2,13 +2,13 @@ apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion rootProject.ext.compileSdkVersion
 
     namespace "com.pillreminderapp"
     defaultConfig {
         applicationId "com.pillreminderapp"
-        minSdkVersion 21
-        targetSdkVersion 33
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
     }
@@ -42,4 +42,12 @@ dependencies {
     }
 }
 
-// Native modules script removed for simplified build
+// React Native configuration
+react {
+    root = file("../")
+    reactNativeDir = file("../node_modules/react-native")
+    codegenDir = file("../node_modules/react-native-codegen")
+    cliFile = file("../node_modules/@react-native-community/cli/build/bin.js")
+}
+
+apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
